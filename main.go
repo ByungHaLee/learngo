@@ -3,7 +3,9 @@ package main
 import "fmt"
 
 func main() {
-	names := []string{"aaa", "bbbb", "ccccc", "dddddd"}
-	names = append(names, "eeeeeee")
-	fmt.Println(names)
+	person := map[string]string{"name": "name", "age": "11"}
+	for key, value := range person {
+		fmt.Println(key, value)
+	}
+	fmt.Println(person)
 }
