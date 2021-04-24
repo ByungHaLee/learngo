@@ -3,8 +3,6 @@ package main
 import "fmt"
 
 func main() {
-	a := 2
-	b := &a
-	a = 10
-	fmt.Println(&a, b)
+	names := [5]string{"aaa", "bbbb", "ccccc", "dddddd"}
+	fmt.Println(names)
 }
