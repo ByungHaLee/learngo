@@ -2,18 +2,9 @@ package main
 
 import "fmt"
 
-func canIDrink(age int) bool {
-	switch {
-	case age < 18:
-		return false
-	case age == 18:
-		return true
-	case age < 18:
-		return false
-	}
-
-	return false
-}
 func main() {
-	fmt.Println(canIDrink(16))
+	a := 2
+	b := &a
+	a = 10
+	fmt.Println(&a, b)
 }
