@@ -4,10 +4,10 @@ import (
 	"fmt"
 )
 
+func multiply(a int, b int) int {
+	return a * b
+}
+
 func main() {
-	const name string = "constant"
-	// var phone string = "variable"
-	phone := "variable" // is equal with above
-	phone = "changable"
-	fmt.Println(phone)
+	fmt.Println(multiply(2, 3))
 }
