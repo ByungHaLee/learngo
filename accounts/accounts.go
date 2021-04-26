@@ -13,10 +13,10 @@ func NewAccount(owner string) *Account {
 }
 
 // Deposit x amount on your account
-func (account Account) Deposit(amount int) {
+func (account *Account) Deposit(amount int) {
 	account.balance += amount
 }
 
-func (account Account) Balance() int {
+func (account *Account) Balance() int {
 	return account.balance
 }
