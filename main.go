@@ -6,14 +6,16 @@ import (
 )
 
 func main() {
-	go niceCount("me")
-	go niceCount("you")
-	time.Sleep(time.Second * 5)
+	c := make(chan bool)
+	people := [2]string{"me", "you"}
+	for _, person := range people {
+		go isNice(person, c)
+	}
+	fmt.Println(<-c)
+	fmt.Println(<-c)
 }
 
-func niceCount(person string) {
-	for i := 0; i < 10; i++ {
-		fmt.Println(person, "is nice", i)
-		time.Sleep(time.Second)
-	}
+func isNice(person string, c chan bool) {
+	time.Sleep(time.Second * 5)
+	c <- true
 }
