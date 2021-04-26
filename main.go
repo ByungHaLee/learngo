@@ -23,11 +23,16 @@ type extractedJob struct {
 var baseUrl string = "https://kr.indeed.com/jobs?q=python&limit=50"
 
 func main() {
+	c := make(chan []extractedJob)
 	var totalJobs []extractedJob
 	totalPages := getPages()
 
 	for i := 0; i < totalPages; i++ {
-		jobs := getPage(i)
+		go getPage(i, c)
+	}
+
+	for i := 0; i < totalPages; i++ {
+		jobs := <-c
 		totalJobs = append(totalJobs, jobs...)
 	}
 
@@ -35,26 +40,7 @@ func main() {
 	fmt.Println("Done, extracted", len(totalJobs))
 }
 
-func writeJobs(jobs []extractedJob) {
-	file, err := os.Create("jobs.csv")
-	checkErr(err)
-
-	w := csv.NewWriter(file)
-	defer w.Flush()
-
-	headers := []string{"URL", "Title", "Location", "Salary", "Summary"}
-
-	wErr := w.Write(headers)
-	checkErr(wErr)
-
-	for _, job := range jobs {
-		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
-		jwErr := w.Write(jobSlice)
-		checkErr(jwErr)
-	}
-}
-
-func getPage(page int) []extractedJob {
+func getPage(page int, mainC chan<- []extractedJob) {
 	c := make(chan extractedJob)
 	var jobs []extractedJob
 	pageUrl := baseUrl + "&start=" + strconv.Itoa(page*50)
@@ -74,12 +60,11 @@ func getPage(page int) []extractedJob {
 	for i := 0; i < searchCards.Length(); i++ {
 		job := <-c
 		jobs = append(jobs, job)
-
 	}
-	return jobs
+	mainC <- jobs
 }
 
-func extractJob(card *goquery.Selection, c chan<- extractedJob) extractedJob {
+func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 	id, _ := card.Attr("data-jk")
 	title := cleanString(card.Find(".title>a").Text())
 	location := cleanString(card.Find(".sjcl").Text())
@@ -94,8 +79,8 @@ func extractJob(card *goquery.Selection, c chan<- extractedJob) extractedJob {
 		salary:   salary,
 		summary:  summary,
 	}
-
 }
+
 func cleanString(str string) string {
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
@@ -116,6 +101,25 @@ func getPages() int {
 	})
 
 	return pages
+}
+
+func writeJobs(jobs []extractedJob) {
+	file, err := os.Create("jobs.csv")
+	checkErr(err)
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	headers := []string{"URL", "Title", "Location", "Salary", "Summary"}
+
+	wErr := w.Write(headers)
+	checkErr(wErr)
+
+	for _, job := range jobs {
+		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salary, job.summary}
+		jwErr := w.Write(jobSlice)
+		checkErr(jwErr)
+	}
 }
 
 func checkErr(err error) {
