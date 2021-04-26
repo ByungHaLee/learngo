@@ -41,9 +41,10 @@ func getPage(page int) {
 	searchCards := doc.Find(".jobsearch-SerpJobCard")
 	searchCards.Each(func(i int, card *goquery.Selection) {
 		id, _ := card.Attr("data-jk")
-		fmt.Println(id)
 		title := card.Find(".title>a").Text()
-		fmt.Println(title)
+		location := card.Find(".sjcl > .location").Text()
+		company := card.Find(".sjcl > .company").Text()
+		fmt.Println(id, title, company, location)
 	})
 }
 
