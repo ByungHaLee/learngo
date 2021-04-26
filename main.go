@@ -7,7 +7,8 @@ import (
 
 func main() {
 	go niceCount("me")
-	niceCount("you")
+	go niceCount("you")
+	time.Sleep(time.Second * 5)
 }
 
 func niceCount(person string) {
