@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	niceCount("me")
+	go niceCount("me")
 	niceCount("you")
 }
 
