@@ -1,17 +1,25 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	"strings"
 
+	"github.com/ByungHaLee/learngo/scrapper"
 	"github.com/labstack/echo/v4"
 )
 
 func handleHome(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	return c.File("home.html")
+}
+func handleScrape(c echo.Context) error {
+	term := strings.ToLower(scrapper.CleanString(c.FormValue("term")))
+	fmt.Println(term)
+	return nil
 }
 
 func main() {
 	e := echo.New()
 	e.GET("/", handleHome)
+	e.POST("/scrape", handleScrape)
 	e.Logger.Fatal(e.Start(":1323"))
 }
