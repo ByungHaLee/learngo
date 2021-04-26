@@ -1,5 +1,7 @@
 package accounts
 
+import "errors"
+
 // Account struct
 type Account struct {
 	owner   string
@@ -21,6 +23,10 @@ func (account *Account) Balance() int {
 	return account.balance
 }
 
-func (account *Account) Withdraw(amount int) {
+func (account *Account) Withdraw(amount int) error {
+	if account.balance < amount {
+		return errors.New("can't withdraw you don't have enough balance")
+	}
 	account.balance -= amount
+	return nil
 }
