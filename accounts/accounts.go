@@ -1,8 +1,10 @@
 package accounts
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
-// Account struct
 type Account struct {
 	owner   string
 	balance int
@@ -10,13 +12,11 @@ type Account struct {
 
 var errNoMoney = errors.New("can't withdraw you don't have enough balance")
 
-// NewAccount create account
 func NewAccount(owner string) *Account {
 	account := Account{owner: owner, balance: 0}
 	return &account
 }
 
-// Deposit x amount on your account
 func (account *Account) Deposit(amount int) {
 	account.balance += amount
 }
@@ -31,4 +31,16 @@ func (account *Account) Withdraw(amount int) error {
 	}
 	account.balance -= amount
 	return nil
+}
+
+func (account *Account) ChangeOwner(newOwner string) {
+	account.owner = newOwner
+}
+
+func (account Account) Owner() string {
+	return account.owner
+}
+
+func (a Account) String() string {
+	return fmt.Sprint(a.Owner(), "'s account. \nHas: ", a.Balance())
 }
